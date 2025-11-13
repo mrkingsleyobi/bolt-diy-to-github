@@ -1,0 +1,12 @@
+{
+  "name": "bolt-diy-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for Bolt.diy to GitHub export workflow",
+  "main": "export-workflow.test.cjs",
+  "scripts": {
+    "test": "node export-workflow.test.cjs"
+  },
+  "dependencies": {
+    "jsdom": "^22.1.0"
+  }
+}

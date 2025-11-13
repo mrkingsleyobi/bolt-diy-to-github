@@ -1,4 +1,6 @@
 // GitHub API Types
+export type { FileContent, DirectoryContent, Content, FileCreateParams, FileUpdateParams, FileDeleteParams, FileOperationResult, FileDeleteResult, BatchFileOperation, BatchFileOperationResult } from './file';
+
 export interface Repository {
   id: number;
   node_id: string;

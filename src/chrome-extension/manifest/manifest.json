@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Bolt.DIY to GitHub",
+  "version": "1.0.0",
+  "description": "Sync your Bolt.DIY projects to GitHub with multi-environment branching support",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://*.github.com/*"
+  ],
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://bolt.diy/*"],
+      "js": ["content/content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Bolt.DIY to GitHub"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  }
+}

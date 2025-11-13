@@ -14,3 +14,12 @@ export type {
 export { TokenEncryptionService } from './security/TokenEncryptionService.js';
 export { SecureTokenStorage } from './services/storage/SecureTokenStorage.js';
 export { EnhancedGitHubPATAuthService } from './services/validation/EnhancedGitHubPATAuthService.js';
+
+// ZIP extraction utilities
+export { ZipExtractionService } from './utils/zip/ZipExtractionService.js';
+export type {
+  ZipEntry,
+  ZipExtractionOptions,
+  ZipExtractionResult,
+  ZipExtractionError
+} from './types/zip.js';
