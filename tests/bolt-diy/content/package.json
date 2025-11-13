@@ -1,0 +1,12 @@
+{
+  "name": "bolt-diy-content-tests",
+  "version": "1.0.0",
+  "description": "Unit tests for Bolt.diy content script",
+  "main": "content.script.test.js",
+  "scripts": {
+    "test": "node content.script.test.js"
+  },
+  "dependencies": {
+    "jsdom": "^22.1.0"
+  }
+}

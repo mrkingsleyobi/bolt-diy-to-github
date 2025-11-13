@@ -1,0 +1,12 @@
+{
+  "name": "progress-tracking-test",
+  "version": "1.0.0",
+  "description": "Test script for progress tracking functionality",
+  "main": "simple-progress-test.js",
+  "scripts": {
+    "test": "node simple-progress-test.js"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}

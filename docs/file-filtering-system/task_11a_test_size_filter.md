@@ -1,0 +1,140 @@
+# Task 11a: Test Size Filter
+
+**Estimated Time: 10 minutes**
+
+## Context
+I'm analyzing this fresh with no assumptions about prior implementation. We need to create comprehensive unit tests for the size filter to ensure it works correctly with various size configurations.
+
+## Current System State
+- SizeFilter implementation exists
+- Jest testing framework is configured
+- TypeScript compiler available
+- Basic tests may exist but need comprehensive coverage
+
+## Your Task
+Create comprehensive unit tests for the size filter covering various size limits and edge cases.
+
+## Test First (RED Phase)
+The tests already exist from our earlier implementation, but we need to expand them for comprehensive coverage.
+
+Minimal Implementation (GREEN Phase)
+The existing tests should already pass.
+
+Refactored Solution (REFACTOR Phase)
+```typescript
+// src/filters/__tests__/SizeFilter.test.ts
+import { SizeFilter } from '../SizeFilter';
+
+describe('SizeFilter', () => {
+  test('should allow files within size bounds', () => {
+    const filter = new SizeFilter({ minSize: 100, maxSize: 1000 });
+    const result = filter.apply({ path: 'file.txt', size: 500, contentType: 'text/plain' });
+    expect(result).toBe(true);
+  });
+
+  test('should exclude files below minimum size', () => {
+    const filter = new SizeFilter({ minSize: 100 });
+    const result = filter.apply({ path: 'file.txt', size: 50, contentType: 'text/plain' });
+    expect(result).toBe(false);
+    expect(filter.getReason()).toBe('File size 50 bytes is below minimum 100 bytes');
+  });
+
+  test('should exclude files above maximum size', () => {
+    const filter = new SizeFilter({ maxSize: 1000 });
+    const result = filter.apply({ path: 'file.txt', size: 1500, contentType: 'text/plain' });
+    expect(result).toBe(false);
+    expect(filter.getReason()).toBe('File size 1500 bytes is above maximum 1000 bytes');
+  });
+
+  test('should allow all files when no size limits specified', () => {
+    const filter = new SizeFilter({});
+    const result = filter.apply({ path: 'file.txt', size: 500, contentType: 'text/plain' });
+    expect(result).toBe(true);
+  });
+
+  test('should handle zero size files', () => {
+    const filter = new SizeFilter({ minSize: 1 });
+    const result = filter.apply({ path: 'empty.txt', size: 0, contentType: 'text/plain' });
+    expect(result).toBe(false);
+    expect(filter.getReason()).toBe('File size 0 bytes is below minimum 1 bytes');
+  });
+
+  test('should handle exact boundary conditions', () => {
+    const minFilter = new SizeFilter({ minSize: 100 });
+    expect(minFilter.apply({ path: 'file.txt', size: 100, contentType: 'text/plain' })).toBe(true);
+
+    const maxFilter = new SizeFilter({ maxSize: 100 });
+    expect(maxFilter.apply({ path: 'file.txt', size: 100, contentType: 'text/plain' })).toBe(true);
+  });
+
+  test('should handle very large files', () => {
+    const filter = new SizeFilter({ maxSize: 1024 * 1024 }); // 1MB limit
+    const result = filter.apply({
+      path: 'large.zip',
+      size: 1024 * 1024 * 10, // 10MB file
+      contentType: 'application/zip'
+    });
+    expect(result).toBe(false);
+    expect(filter.getReason()).toBe('File size 10485760 bytes is above maximum 1048576 bytes');
+  });
+
+  test('should handle both min and max size limits', () => {
+    const filter = new SizeFilter({ minSize: 100, maxSize: 1000 });
+
+    // Too small
+    expect(filter.apply({ path: 'small.txt', size: 50, contentType: 'text/plain' })).toBe(false);
+
+    // Just right
+    expect(filter.apply({ path: 'medium.txt', size: 500, contentType: 'text/plain' })).toBe(true);
+
+    // Too large
+    expect(filter.apply({ path: 'large.txt', size: 1500, contentType: 'text/plain' })).toBe(false);
+  });
+
+  test('should provide correct reasons for exclusion', () => {
+    const minFilter = new SizeFilter({ minSize: 100 });
+    minFilter.apply({ path: 'small.txt', size: 50, contentType: 'text/plain' });
+    expect(minFilter.getReason()).toBe('File size 50 bytes is below minimum 100 bytes');
+
+    const maxFilter = new SizeFilter({ maxSize: 100 });
+    maxFilter.apply({ path: 'large.txt', size: 150, contentType: 'text/plain' });
+    expect(maxFilter.getReason()).toBe('File size 150 bytes is above maximum 100 bytes');
+  });
+
+  test('should reset reason on each application', () => {
+    const filter = new SizeFilter({ minSize: 100 });
+
+    // First application - should be excluded
+    filter.apply({ path: 'small.txt', size: 50, contentType: 'text/plain' });
+    expect(filter.getReason()).not.toBe('');
+
+    // Second application - should be included (no reason)
+    filter.apply({ path: 'large.txt', size: 150, contentType: 'text/plain' });
+    expect(filter.getReason()).toBe('');
+  });
+});
+```
+
+Verification Commands
+```bash
+# Run the tests to verify implementation works
+npx jest src/filters/__tests__/SizeFilter.test.ts --verbose
+# Check coverage
+npx jest src/filters/__tests__/SizeFilter.test.ts --coverage
+```
+
+Success Criteria
+[ ] All existing tests still pass
+[ ] New tests cover boundary conditions
+[ ] Edge cases like zero-size and very large files are handled
+[ ] Both min and max size limits work together
+[ ] Reasons are provided correctly and reset appropriately
+[ ] Test coverage is comprehensive
+[ ] No TypeScript errors in tests
+
+Dependencies Confirmed
+- SizeFilter implementation exists
+- Jest testing framework configured
+
+Next Task
+task_12a_test_content_type_filter.md - Create unit tests for content-type filter

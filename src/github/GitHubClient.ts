@@ -3,6 +3,7 @@ import { HttpClient } from '../utils/http';
 import { GitHubPATAuthService } from '../services/GitHubPATAuthService';
 import { RepositoryService } from './repositories/RepositoryService';
 import { BranchService } from './branches/BranchService';
+import { FileService } from './files/FileService';
 
 export class GitHubClient {
   private httpClient: HttpClient;
@@ -10,6 +11,7 @@ export class GitHubClient {
   private token: string;
   private _repositories: RepositoryService;
   private _branches: BranchService;
+  private _files: FileService;
 
   constructor(token: string) {
     // Validate token format
@@ -27,6 +29,7 @@ export class GitHubClient {
     // Initialize services
     this._repositories = new RepositoryService(this.httpClient, this.getAuthHeaders.bind(this));
     this._branches = new BranchService(this.httpClient, this.getAuthHeaders.bind(this));
+    this._files = new FileService(this.httpClient, this.getAuthHeaders.bind(this));
   }
 
   private getAuthHeaders(): Record<string, string> {
@@ -41,5 +44,9 @@ export class GitHubClient {
 
   get branches() {
     return this._branches;
+  }
+
+  get files() {
+    return this._files;
   }
 }

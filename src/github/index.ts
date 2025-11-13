@@ -12,5 +12,15 @@ export type {
   GitHubUser,
   AuthResult,
   GitHubError,
-  GitHubClientOptions
+  GitHubClientOptions,
+  FileContent,
+  DirectoryContent,
+  Content,
+  FileCreateParams,
+  FileUpdateParams,
+  FileDeleteParams,
+  FileOperationResult,
+  FileDeleteResult,
+  BatchFileOperation,
+  BatchFileOperationResult
 } from './types/github';
