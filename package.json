@@ -1,0 +1,53 @@
+{
+  "name": "bolt-diy-to-github",
+  "version": "1.0.0",
+  "description": "Sync your Bolt.DIY projects to GitHub with multi-environment branching support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest --config=jest.config.cjs",
+    "build": "tsc",
+    "build:extension": "vite build --config vite.extension.config.js",
+    "dev:extension": "vite --config vite.extension.config.js",
+    "lint": "echo 'Add linting here'",
+    "typecheck": "tsc --noEmit",
+    "playwright": "playwright test",
+    "example": "node dist/examples/github-auth-example.js",
+    "zip-example": "node dist/examples/zip-extraction-example.js"
+  },
+  "keywords": [
+    "github",
+    "authentication",
+    "pat",
+    "personal-access-token",
+    "zip",
+    "extraction",
+    "chrome-extension",
+    "bolt-diy"
+  ],
+  "author": "bolt-diy-to-github",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.2.1",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@types/archiver": "^7.0.0",
+    "@types/chrome": "^0.0.299",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.0",
+    "@types/yauzl": "^2.10.3",
+    "archiver": "^7.0.1",
+    "jest": "^30.2.0",
+    "svelte": "^5.0.0",
+    "ts-jest": "^29.4.5",
+    "typescript": "^5.9.3",
+    "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "@types/mime-types": "^3.0.1",
+    "mime-types": "^3.0.1",
+    "minimatch": "^3.1.2",
+    "yauzl": "^3.2.0",
+    "yauzl-promise": "^4.0.0"
+  }
+}
