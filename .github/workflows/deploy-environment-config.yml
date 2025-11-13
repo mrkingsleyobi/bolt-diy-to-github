@@ -1,0 +1,95 @@
+name: Deploy - Environment Configuration Management
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/config/**'
+      - 'src/security/**'
+      - 'dist/**'
+      - '.github/workflows/deploy-environment-config.yml'
+  release:
+    types: [published]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run all tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            package.json
+            README.md
+
+  deploy-npm:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  deploy-docs:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build documentation
+        run: |
+          echo "Building documentation..."
+          # Add documentation build steps here if needed
+
+      - name: Deploy documentation
+        run: |
+          echo "Deploying documentation..."
+          # Add documentation deployment steps here if needed

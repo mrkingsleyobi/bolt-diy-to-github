@@ -1,0 +1,23 @@
+# Code Owners
+
+# Environment Configuration Management
+src/config/ @config-team @security-team
+src/security/ @security-team
+tests/config/ @config-team @qa-team
+tests/security/ @security-team @qa-team
+
+# Documentation
+docs/ENVIRONMENT_CONFIGURATION_MANAGEMENT* @config-team @docs-team
+docs/CONFIGURATION_MANAGEMENT_SUMMARY.md @config-team @docs-team
+
+# GitHub Actions Workflows
+.github/workflows/ci-environment-config.yml @devops-team @config-team
+.github/workflows/security-scan.yml @security-team @devops-team
+.github/workflows/deploy-environment-config.yml @devops-team
+.github/workflows/ci-cd-environment-config-complete.yml @devops-team @config-team
+.github/workflows/code-review.yml @qa-team @config-team
+.github/workflows/monitoring.yml @devops-team
+
+# All other config and security files
+src/config/**/* @config-team
+src/security/**/* @security-team

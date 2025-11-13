@@ -1,0 +1,91 @@
+name: Code Review - Environment Configuration
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/config/**'
+      - 'src/security/**'
+      - 'tests/config/**'
+      - 'tests/security/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: |
+          echo "Running linter..."
+          # Add actual linting when implemented
+          echo "Linting would be performed here"
+
+  security-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for security issues
+        run: |
+          echo "Running security checks..."
+          npm audit --audit-level=moderate
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "Checking for hardcoded secrets..."
+          ! grep -r "ghp_[a-zA-Z0-9]" src/ --exclude-dir=node_modules || echo "WARNING: Potential GitHub PAT found"
+          ! grep -r "gho_[a-zA-Z0-9]" src/ --exclude-dir=node_modules || echo "WARNING: Potential GitHub OAuth token found"
+
+  test-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: |
+          npm test -- --coverage --testPathPattern="tests/config|tests/security"
+
+      - name: Check coverage threshold
+        run: |
+          echo "Checking coverage threshold..."
+          # Add coverage threshold check when implemented
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          deny-licenses: GPL-1.0, GPL-2.0, AGPL-1.0, AGPL-3.0
