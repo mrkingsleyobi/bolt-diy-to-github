@@ -10,7 +10,9 @@ export enum EnvironmentType {
   DEVELOPMENT = 'development',
   TESTING = 'testing',
   STAGING = 'staging',
-  PRODUCTION = 'production'
+  PRODUCTION = 'production',
+  CLOUD = 'cloud',
+  CICD = 'cicd'
 }
 
 /**

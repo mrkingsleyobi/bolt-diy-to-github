@@ -3,6 +3,7 @@
   import ProjectView from './ProjectView.svelte';
   import SyncControls from './SyncControls.svelte';
   import OptionsPanel from './OptionsPanel.svelte';
+  import EnvironmentSyncControls from './EnvironmentSyncControls.svelte';
 
   // State variables
   let project = null;
@@ -18,6 +19,7 @@
     autoSync: false,
     syncInterval: 30
   };
+  let currentEnvironment = 'main';
 
   // Load options when component mounts
   onMount(async () => {
@@ -55,13 +57,50 @@
       type: 'START_SYNC',
       projectId: project.id,
       options: {
-        branch: options.defaultBranch,
+        branch: currentEnvironment,
         message: `Sync from Bolt.DIY to GitHub - ${new Date().toISOString()}`
       }
     }).catch(err => {
       syncInProgress = false;
       showError(`Failed to start sync: ${err.message}`);
     });
+  }
+
+  // Handle environment-specific sync
+  function handleEnvironmentSync(event) {
+    const { environment } = event.detail;
+    currentEnvironment = environment;
+
+    if (!project) {
+      showError('No project detected. Please navigate to a Bolt.DIY project page.');
+      return;
+    }
+
+    if (syncInProgress) {
+      return;
+    }
+
+    syncInProgress = true;
+    syncStatus = `Starting sync to ${environment}...`;
+    error = null;
+    showSuccess = false;
+
+    chrome.runtime.sendMessage({
+      type: 'START_SYNC',
+      projectId: project.id,
+      options: {
+        branch: environment,
+        message: `Sync from Bolt.DIY to GitHub (${environment}) - ${new Date().toISOString()}`
+      }
+    }).catch(err => {
+      syncInProgress = false;
+      showError(`Failed to start sync: ${err.message}`);
+    });
+  }
+
+  // Handle environment change
+  function handleEnvironmentChange(event) {
+    currentEnvironment = event.detail.environment;
   }
 
   // Handle options save
@@ -183,10 +222,12 @@
     <main>
       {#if project}
         <ProjectView {project} />
-        <SyncControls
-          {syncInProgress}
-          onSync={handleSync}
-          branch={options.defaultBranch}
+        <EnvironmentSyncControls
+          environments={options.environments}
+          currentEnvironment={currentEnvironment}
+          syncInProgress={syncInProgress}
+          on:sync={handleEnvironmentSync}
+          on:environmentChange={handleEnvironmentChange}
         />
       {:else}
         <div class="no-project">
@@ -198,7 +239,7 @@
   {/if}
 
   <footer>
-    <p>Multi-environment branching enabled</p>
+    <p>Environment: {currentEnvironment} | Multi-environment branching enabled</p>
   </footer>
 </div>
 

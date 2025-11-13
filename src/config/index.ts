@@ -11,6 +11,8 @@ export * from './adapters/DevelopmentEnvironmentAdapter';
 export * from './adapters/TestingEnvironmentAdapter';
 export * from './adapters/StagingEnvironmentAdapter';
 export * from './adapters/ProductionEnvironmentAdapter';
+export * from './adapters/CloudEnvironmentAdapter';
+export * from './adapters/CICDEnvironmentAdapter';
 
 // Configuration providers
 export * from './providers/FileConfigurationProvider';

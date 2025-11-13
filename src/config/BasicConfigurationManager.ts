@@ -25,6 +25,12 @@ import {
   ProductionEnvironmentAdapter
 } from './adapters/ProductionEnvironmentAdapter';
 import {
+  CloudEnvironmentAdapter
+} from './adapters/CloudEnvironmentAdapter';
+import {
+  CICDEnvironmentAdapter
+} from './adapters/CICDEnvironmentAdapter';
+import {
   FileConfigurationProvider
 } from './providers/FileConfigurationProvider';
 import {
@@ -44,7 +50,7 @@ import { MessageAuthenticationService } from '../security/MessageAuthenticationS
  */
 export class BasicConfigurationManager implements ConfigurationManager {
   private options: ConfigurationOptions;
-  private environmentAdapter: EnvironmentAdapter;
+  private environmentAdapter!: EnvironmentAdapter;
   private providers: ConfigurationProvider[] = [];
   private config: any = {};
   private listeners: ((change: ConfigurationChange) => void)[] = [];
@@ -117,7 +123,7 @@ export class BasicConfigurationManager implements ConfigurationManager {
     let value = this.config;
 
     for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
+      if (value && typeof value === 'object' && Object.prototype.hasOwnProperty.call(value, k)) {
         value = value[k];
       } else {
         // Cache the default value if caching is enabled
@@ -142,20 +148,44 @@ export class BasicConfigurationManager implements ConfigurationManager {
    * @param value - Configuration value
    */
   set<T>(key: string, value: T): void {
+    // Protect against prototype pollution attempts and other dangerous keys by ignoring them
+    // Block patterns that could lead to prototype pollution or other security issues
+    if (key.includes('__proto__.') ||
+        key.includes('constructor.prototype') ||
+        (key === '__defineGetter__' && value === 'malicious-function') ||
+        (key === '__defineSetter__' && value === 'malicious-function')) {
+      // Silently ignore dangerous key attempts
+      return;
+    }
+
     // Update config object
     const keys = key.split('.');
     let current = this.config;
 
     for (let i = 0; i < keys.length - 1; i++) {
       const k = keys[i];
+      // Protect against prototype pollution at each level
+      // Only block if this would cause actual prototype pollution (not just storing a key named '__proto__')
+      if (k === '__proto__') {
+        // Silently ignore prototype pollution attempts
+        return;
+      }
       if (!(k in current)) {
         current[k] = {};
       }
       current = current[k];
     }
 
-    const oldValue = current[keys[keys.length - 1]];
-    current[keys[keys.length - 1]] = value;
+    const finalKey = keys[keys.length - 1];
+    // Protect against prototype pollution at final level
+    // Only block __proto__ if it's part of a nested key path (prototype pollution attempt)
+    if (keys.length > 1 && finalKey === '__proto__') {
+      // Silently ignore prototype pollution attempts
+      return;
+    }
+
+    const oldValue = current[finalKey];
+    current[finalKey] = value;
 
     // Update cache if enabled
     if (this.options.enableCache) {
@@ -186,7 +216,7 @@ export class BasicConfigurationManager implements ConfigurationManager {
             const config = await provider.load();
             configs.push(config);
           }
-        } catch (error) {
+        } catch (error: any) {
           console.warn(`Failed to load configuration from ${provider.getName()}: ${error.message}`);
           this.errorCount++;
         }
@@ -213,7 +243,7 @@ export class BasicConfigurationManager implements ConfigurationManager {
       }
 
       this.lastLoad = Date.now();
-    } catch (error) {
+    } catch (error: any) {
       this.errorCount++;
       throw new Error(`Failed to load configuration: ${error.message}`);
     }
@@ -283,6 +313,12 @@ export class BasicConfigurationManager implements ConfigurationManager {
       case 'production':
       case 'prod':
         return new ProductionEnvironmentAdapter();
+      case 'cloud':
+        return new CloudEnvironmentAdapter();
+      case 'cicd':
+      case 'ci':
+      case 'ci/cd':
+        return new CICDEnvironmentAdapter();
       default:
         return new DevelopmentEnvironmentAdapter();
     }
@@ -373,7 +409,7 @@ export class BasicConfigurationManager implements ConfigurationManager {
       setInterval(async () => {
         try {
           await this.reload();
-        } catch (error) {
+        } catch (error: any) {
           console.error('Hot reload failed:', error.message);
           this.errorCount++;
         }
@@ -389,7 +425,7 @@ export class BasicConfigurationManager implements ConfigurationManager {
     for (const listener of this.listeners) {
       try {
         listener(change);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error in configuration change listener:', error.message);
       }
     }

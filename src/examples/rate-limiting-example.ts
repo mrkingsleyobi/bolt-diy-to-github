@@ -164,7 +164,7 @@ async function errorHandlingExample() {
     // Try to create token without secret key
     rateLimiter.setSecretKey('');
     rateLimiter.createRateLimitToken({ test: 'data' });
-  } catch (error) {
+  } catch (error: any) {
     console.log('✅ Caught expected error:', error.message);
   }
 
@@ -174,21 +174,21 @@ async function errorHandlingExample() {
   try {
     // Try to update with invalid configuration
     rateLimiter.updateConfiguration(-1, 1);
-  } catch (error) {
+  } catch (error: any) {
     console.log('✅ Caught expected error:', error.message);
   }
 
   try {
     // Try to set invalid secret key
     rateLimiter.setSecretKey('');
-  } catch (error) {
+  } catch (error: any) {
     console.log('✅ Caught expected error:', error.message);
   }
 
   try {
     // Try to decrypt invalid data
     await rateLimiter.decryptWithRateLimit('invalid-data', 'secret');
-  } catch (error) {
+  } catch (error: any) {
     console.log('✅ Caught expected error:', error.message);
   }
 
@@ -200,7 +200,7 @@ async function chromeExtensionIntegrationExample() {
   console.log('\n\n=== Chrome Extension Integration Example ===');
 
   // Simulate background script initialization
-  const rateLimiter = new RateLimitingService(20, 2, chrome.runtime.id || 'extension-secret');
+  const rateLimiter = new RateLimitingService(20, 2, 'extension-secret');
 
   console.log('Chrome extension rate limiter initialized');
   console.log('- Bucket size:', rateLimiter.getBucketSize());
@@ -280,6 +280,6 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Run examples if this file is executed directly
-if (typeof window === 'undefined' && require.main === module) {
+if (require.main === module) {
   runExamples().catch(console.error);
 }

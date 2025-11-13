@@ -207,7 +207,7 @@ export class RateLimitingService {
       };
 
       return JSON.stringify(rateLimitData);
-    } catch (error) {
+    } catch (error: any) {
       // Re-throw the error to ensure proper error propagation
       throw error;
     }
@@ -237,7 +237,7 @@ export class RateLimitingService {
       }
 
       return decryptedData;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to decrypt with rate limit: ${error.message}`);
     }
   }

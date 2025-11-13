@@ -60,7 +60,7 @@ export class FileConfigurationProvider implements ConfigurationProvider {
       this.lastModified = stats.mtime.getTime();
 
       return config;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
         // File doesn't exist, return empty config
         return {};
@@ -95,7 +95,7 @@ export class FileConfigurationProvider implements ConfigurationProvider {
       this.cache = config;
       const stats = await fs.stat(this.filePath);
       this.lastModified = stats.mtime.getTime();
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to save configuration to ${this.filePath}: ${error.message}`);
     }
   }
@@ -108,7 +108,7 @@ export class FileConfigurationProvider implements ConfigurationProvider {
     try {
       await fs.access(this.filePath);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       return false;
     }
   }

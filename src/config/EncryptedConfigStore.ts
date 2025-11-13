@@ -1,8 +1,8 @@
 // SecureConfigStore.ts - Secure configuration storage with encryption
 // Phase 4: Environment Configuration Management - Task 11: Implement Environment Configuration Service (SecureConfigStore component)
 
-import { PayloadEncryptionService } from '../../security/PayloadEncryptionService';
-import { MessageAuthenticationService } from '../../security/MessageAuthenticationService';
+import { PayloadEncryptionService } from '../security/PayloadEncryptionService';
+import { MessageAuthenticationService } from '../security/MessageAuthenticationService';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -67,7 +67,7 @@ export class EncryptedConfigStore implements SecureConfigStore {
   private async ensureStorageDirectory(): Promise<void> {
     try {
       await fs.mkdir(this.storagePath, { recursive: true });
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to create storage directory: ${error.message}`);
     }
   }
@@ -108,7 +108,7 @@ export class EncryptedConfigStore implements SecureConfigStore {
       );
 
       return JSON.parse(decrypted);
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
         // File doesn't exist, return null
         return null;
@@ -150,7 +150,7 @@ export class EncryptedConfigStore implements SecureConfigStore {
 
       // Write encrypted configuration to file
       await fs.writeFile(filePath, JSON.stringify(storageObject, null, 2), 'utf8');
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to save secure configuration: ${error.message}`);
     }
   }
@@ -167,7 +167,7 @@ export class EncryptedConfigStore implements SecureConfigStore {
       if (exists) {
         await fs.unlink(filePath);
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error.code !== 'ENOENT') {
         throw new Error(`Failed to delete configuration: ${error.message}`);
       }
@@ -184,7 +184,7 @@ export class EncryptedConfigStore implements SecureConfigStore {
       return files
         .filter(file => file.endsWith('.conf'))
         .map(file => file.replace('.conf', ''));
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to list configurations: ${error.message}`);
     }
   }
@@ -209,7 +209,7 @@ export class EncryptedConfigStore implements SecureConfigStore {
     try {
       await fs.access(filePath);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       return false;
     }
   }

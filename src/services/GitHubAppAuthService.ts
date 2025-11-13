@@ -57,7 +57,7 @@ export class GitHubAppAuthService {
       });
 
       if (response.ok) {
-        const tokenData = await response.json();
+        const tokenData: any = await response.json();
         if (tokenData.access_token) {
           return {
             success: true,
@@ -127,7 +127,8 @@ export class GitHubAppAuthService {
       });
 
       if (response.ok) {
-        const user: GitHubUser = await response.json();
+        const userData = await response.json();
+        const user: GitHubUser = userData as GitHubUser;
         return { authenticated: true, user };
       } else if (response.status === 401) {
         return {

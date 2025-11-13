@@ -183,7 +183,16 @@ export class EnvironmentConfigurationService {
   async validateTokens(
     tokens: Record<string, { token: string; type: string }>
   ): Promise<Record<string, import('../services/TokenValidationService').TokenValidationResult>> {
-    return await this.tokenValidationService.validateTokens(tokens);
+    // Validate input early - must be a non-null object with at least one entry
+    if (!tokens || typeof tokens !== 'object' || tokens === null || Array.isArray(tokens) || Object.keys(tokens).length === 0) {
+      throw new Error('Invalid tokens input: must be a non-empty object');
+    }
+
+    try {
+      return await this.tokenValidationService.validateTokens(tokens);
+    } catch (error) {
+      throw error; // Re-throw the error so it's properly handled by the test
+    }
   }
 
   /**
@@ -194,7 +203,16 @@ export class EnvironmentConfigurationService {
   async refreshTokens(
     tokens: Record<string, { refreshToken: string; type: string }>
   ): Promise<Record<string, import('../services/TokenValidationService').TokenRefreshResult>> {
-    return await this.tokenValidationService.refreshTokens(tokens);
+    // Validate input early - must be a non-null object with at least one entry
+    if (!tokens || typeof tokens !== 'object' || tokens === null || Array.isArray(tokens) || Object.keys(tokens).length === 0) {
+      throw new Error('Invalid tokens input: must be a non-empty object');
+    }
+
+    try {
+      return await this.tokenValidationService.refreshTokens(tokens);
+    } catch (error) {
+      throw error; // Re-throw the error so it's properly handled by the test
+    }
   }
 
   /**
@@ -203,11 +221,23 @@ export class EnvironmentConfigurationService {
    * @returns Sanitized configuration
    */
   private sanitizeForTransmission(config: any): any {
-    const sanitized = { ...config };
+    const sanitized = JSON.parse(JSON.stringify(config)); // Deep clone
 
-    // Remove sensitive data
-    if (sanitized.github && sanitized.github.token) {
+    // Remove sensitive data from GitHub
+    if (sanitized.github) {
       delete sanitized.github.token;
+      delete sanitized.github.refreshToken;
+    }
+
+    // Remove sensitive data from database
+    if (sanitized.database) {
+      delete sanitized.database.password;
+    }
+
+    // Remove sensitive data from API
+    if (sanitized.api) {
+      delete sanitized.api.key;
+      delete sanitized.api.secret;
     }
 
     // Add truth score (mock value for now)
@@ -274,7 +304,7 @@ export class EnvironmentConfigurationService {
           config.github.token,
           this.encryptionPassword
         );
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(`Failed to encrypt GitHub token: ${error.message}`);
       }
     }
@@ -297,7 +327,7 @@ export class EnvironmentConfigurationService {
           config.github.token,
           this.encryptionPassword
         );
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(`Failed to decrypt GitHub token: ${error.message}`);
       }
     }

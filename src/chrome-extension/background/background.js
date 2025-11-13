@@ -333,11 +333,16 @@ async function performSync(projectId, options) {
   // For now, we'll simulate the process
   await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
 
+  // Determine the branch to use (from sync options or default)
+  const branchToUse = (options.branch && options.branch !== 'undefined')
+    ? options.branch
+    : (options.defaultBranch || 'main');
+
   // Simulate result
   const result = {
     success: true,
     filesProcessed: 15,
-    branch: options.defaultBranch || 'main',
+    branch: branchToUse,
     commitSha: 'a1b2c3d4e5f6',
     timestamp: Date.now()
   };

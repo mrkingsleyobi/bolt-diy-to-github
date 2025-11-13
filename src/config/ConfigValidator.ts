@@ -190,7 +190,7 @@ export class ConfigValidatorImpl implements ConfigValidator {
           } else if (result === false) {
             errors.push(`Validation rule '${rule.name}' failed`);
           }
-        } catch (error) {
+        } catch (error: any) {
           errors.push(`Error in validation rule '${rule.name}': ${error.message}`);
         }
       }

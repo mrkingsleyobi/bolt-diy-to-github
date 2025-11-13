@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import EnvironmentConfig from './EnvironmentConfig.svelte';
 
   export let options;
   const dispatch = createEventDispatcher();
@@ -9,6 +10,7 @@
   let autoSync = options.autoSync || false;
   let syncInterval = options.syncInterval || 30;
   let environments = [...(options.environments || ['main', 'development', 'staging', 'production'])];
+  let currentEnvironment = defaultBranch || 'main';
 
   function handleSave() {
     const newOptions = {
@@ -26,42 +28,36 @@
     dispatch('cancel');
   }
 
-  function addEnvironment() {
-    environments = [...environments, ''];
+  function handleEnvironmentChange(event) {
+    environments = event.detail.environments;
   }
 
-  function removeEnvironment(index) {
-    environments = environments.filter((_, i) => i !== index);
+  function handleTokenChange(event) {
+    githubToken = event.detail.token;
   }
 
-  function updateEnvironment(index, value) {
-    environments[index] = value;
+  function handleBranchChange(event) {
+    defaultBranch = event.detail.branch;
+  }
+
+  function handleEnvironmentSelect(event) {
+    currentEnvironment = event.detail.environment;
   }
 </script>
 
 <div class="options-panel">
   <h2>Configuration</h2>
 
-  <div class="form-group">
-    <label for="github-token">GitHub Personal Access Token</label>
-    <input
-      id="github-token"
-      type="password"
-      bind:value={githubToken}
-      placeholder="ghp_..."
-    />
-    <small>Required for GitHub access. Token stored locally and encrypted.</small>
-  </div>
-
-  <div class="form-group">
-    <label for="default-branch">Default Branch</label>
-    <input
-      id="default-branch"
-      type="text"
-      bind:value={defaultBranch}
-      placeholder="main"
-    />
-  </div>
+  <EnvironmentConfig
+    bind:environments
+    bind:currentEnvironment
+    bind:githubToken
+    bind:defaultBranch
+    on:change={handleEnvironmentChange}
+    on:tokenChange={handleTokenChange}
+    on:branchChange={handleBranchChange}
+    on:environmentSelect={handleEnvironmentSelect}
+  />
 
   <div class="form-group">
     <label for="sync-interval">Auto-Sync Interval (minutes)</label>
@@ -82,35 +78,6 @@
       />
       Enable Auto-Sync
     </label>
-  </div>
-
-  <div class="form-group">
-    <label>Environments</label>
-    <div class="environments-list">
-      {#each environments as env, i}
-        <div class="env-input">
-          <input
-            type="text"
-            bind:value={environments[i]}
-            placeholder="Environment name"
-          />
-          <button
-            type="button"
-            on:click={() => removeEnvironment(i)}
-            class="remove-btn"
-          >
-            ×
-          </button>
-        </div>
-      {/each}
-      <button
-        type="button"
-        on:click={addEnvironment}
-        class="add-btn"
-      >
-        + Add Environment
-      </button>
-    </div>
   </div>
 
   <div class="actions">

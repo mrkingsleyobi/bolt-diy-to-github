@@ -51,7 +51,8 @@ export class GitHubPATAuthService {
       });
 
       if (response.ok) {
-        const user: GitHubUser = await response.json();
+        const userData = await response.json();
+        const user: GitHubUser = userData as GitHubUser;
         return { authenticated: true, user };
       } else if (response.status === 401) {
         return {

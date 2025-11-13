@@ -71,7 +71,7 @@ export class RemoteConfigurationProvider implements ConfigurationProvider {
       this.lastFetch = now;
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ECONNABORTED') {
         throw new Error(`Remote configuration request timed out after ${this.timeout}ms`);
       }
@@ -111,7 +111,7 @@ export class RemoteConfigurationProvider implements ConfigurationProvider {
       // Update cache
       this.cache = config;
       this.lastFetch = Date.now();
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ECONNABORTED') {
         throw new Error(`Remote configuration request timed out after ${this.timeout}ms`);
       }
@@ -138,7 +138,7 @@ export class RemoteConfigurationProvider implements ConfigurationProvider {
 
       const response = await axios(config);
       return response.status === 200;
-    } catch (error) {
+    } catch (error: any) {
       return false;
     }
   }
