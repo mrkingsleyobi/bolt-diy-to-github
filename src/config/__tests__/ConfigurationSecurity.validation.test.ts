@@ -275,10 +275,10 @@ describe('Configuration Management - Security Validation', () => {
       authService2.setSecretKey(secret2);
 
       // Create message with one secret
-      const message = await authService1.createAuthenticatedMessage(testPayload);
+      const message = authService1.signMessage(testPayload);
 
       // Try to verify with different secret
-      const isValid = await authService2.verifyMessage(message);
+      const isValid = authService2.verifyMessage(message);
       expect(isValid).toBe(false);
     });
   });

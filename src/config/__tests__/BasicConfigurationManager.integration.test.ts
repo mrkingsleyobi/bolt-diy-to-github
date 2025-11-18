@@ -356,7 +356,7 @@ describe('BasicConfigurationManager - Integration Tests', () => {
       const largeString = 'A'.repeat(100000); // 100KB string
       manager.set('large.string', largeString);
 
-      const retrieved = manager.get('large.string');
+      const retrieved: any = manager.get('large.string');
       expect(retrieved).toBe(largeString);
       expect(retrieved.length).toBe(100000);
 
@@ -364,7 +364,7 @@ describe('BasicConfigurationManager - Integration Tests', () => {
       const largeArray = Array(10000).fill(null).map((_, i) => `item-${i}`);
       manager.set('large.array', largeArray);
 
-      const retrievedArray = manager.get('large.array');
+      const retrievedArray: any = manager.get('large.array');
       expect(retrievedArray).toEqual(largeArray);
       expect(retrievedArray.length).toBe(10000);
 
@@ -377,7 +377,7 @@ describe('BasicConfigurationManager - Integration Tests', () => {
 
       const retrievedObject = manager.get('large.object');
       expect(retrievedObject).toEqual(largeObject);
-      expect(Object.keys(retrievedObject).length).toBe(1000);
+      expect(Object.keys(retrievedObject as object).length).toBe(1000);
     });
   });
 

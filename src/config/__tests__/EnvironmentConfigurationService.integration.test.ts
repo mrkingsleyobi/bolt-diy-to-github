@@ -1,5 +1,6 @@
 import { EnvironmentConfigurationService } from '../EnvironmentConfigurationService';
 import { BasicConfigurationManager } from '../BasicConfigurationManager';
+import { PayloadEncryptionService } from '../../security/PayloadEncryptionService';
 import { TokenEncryptionService } from '../../security/TokenEncryptionService';
 import { MessageAuthenticationService } from '../../security/MessageAuthenticationService';
 import { TokenValidationService } from '../../services/TokenValidationService';
@@ -9,6 +10,7 @@ import { GitHubAppAuthService } from '../../services/GitHubAppAuthService';
 // Integration tests that test the real interactions between components
 describe('EnvironmentConfigurationService - Integration Tests', () => {
   let service: EnvironmentConfigurationService;
+  let payloadEncryptionService: PayloadEncryptionService;
   let tokenEncryptionService: TokenEncryptionService;
   let messageAuthenticationService: MessageAuthenticationService;
   let githubPatAuthService: GitHubPATAuthService;
@@ -17,17 +19,18 @@ describe('EnvironmentConfigurationService - Integration Tests', () => {
 
   beforeEach(() => {
     // Create real instances of services for integration testing
+    payloadEncryptionService = new PayloadEncryptionService();
     tokenEncryptionService = new TokenEncryptionService();
     messageAuthenticationService = new MessageAuthenticationService();
     messageAuthenticationService.setSecretKey('test-secret');
     githubPatAuthService = new GitHubPATAuthService();
-    githubAppAuthService = new GitHubAppAuthService();
+    githubAppAuthService = new GitHubAppAuthService('test-client-id', 'test-client-secret');
 
     // Create service with real dependencies
     service = new EnvironmentConfigurationService(
-      tokenEncryptionService,
-      messageAuthenticationService,
-      tokenEncryptionService, // Reuse for token encryption
+      payloadEncryptionService, // First parameter: payload encryption service
+      messageAuthenticationService, // Second parameter: message authentication service
+      tokenEncryptionService, // Third parameter: token encryption service
       testEncryptionPassword,
       githubPatAuthService,
       githubAppAuthService

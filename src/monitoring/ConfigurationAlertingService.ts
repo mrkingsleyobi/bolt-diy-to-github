@@ -62,7 +62,7 @@ export interface ConfigurationAlert {
   /**
    * Alert type
    */
-  type: 'low_truth_score' | 'high_failure_rate' | 'excessive_rollbacks' | 'security_violation' | 'configuration_change';
+  type: 'low_truth_score' | 'high_failure_rate' | 'excessive_rollbacks' | 'security_violation' | 'configuration_change' | 'alert_summary';
 
   /**
    * Alert severity

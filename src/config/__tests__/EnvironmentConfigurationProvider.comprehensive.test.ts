@@ -141,9 +141,7 @@ describe('EnvironmentConfigurationProvider - Comprehensive Tests', () => {
       expect(config).toEqual({
         key: {
           with: {
-            dashes: 'dash-value'
-          },
-          with: {
+            dashes: 'dash-value',
             mixed: {
               case: 'mixed-case-value'
             }
@@ -464,7 +462,7 @@ describe('EnvironmentConfigurationProvider - Comprehensive Tests', () => {
 
       // Should not affect object prototype
       expect({}.constructor).toBeDefined();
-      expect({}.__proto__).toBeDefined();
+      expect(Object.getPrototypeOf({})).toBeDefined();
     });
 
     it('should not execute code in environment variable values', async () => {
