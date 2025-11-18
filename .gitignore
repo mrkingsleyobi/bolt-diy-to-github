@@ -1,5 +1,177 @@
 
-# Claude Flow generated files
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Production builds
+dist/
+dist-test/
+out/
+build/
+dist-extension/
+
+# Testing
+coverage/
+.nyc_output/
+.jest/
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug files
+debug-*.cjs
+debug-*.js
+debug-*.ts
+test-*.cjs
+test-*.js
+test-*.ts
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+lib-cov/
+
+# Temporary folders
+temp/
+tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# TypeScript
+*.tsbuildinfo
+
+# Chrome Extension
+manifest.json.bak
+
+# Compiled JavaScript and Maps
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+src/**/*.d.ts.map
+
+# Local configuration files
+config.local.js
+local.properties
+
+# ZIP files and archives
+*.zip
+*.tar
+*.gz
+
+# Browser-specific files
+*.localstorage
+
+# npm
+npm-debug.log*
+yarn.lock
+.yarn-integrity
+.lock-wscript
+
+# Lock files
+yarn.lock
+
+# Security
+security-test/
+security.log
+
+# Temporary files from ZIP processing
+tmp-zip-*/
+temp-zip-*/
+
+# Debug files from development
+*.debug.log
+debug-*.cjs
+debug-*.js
+debug-*.ts
+debug-*.mjs
+debug-*.cts
+debug-*.mts
+debug-*.cjs.map
+debug-*.js.map
+debug-*.ts.map
+debug-*.mjs.map
+debug-*.cts.map
+debug-*.mts.map
+
+# Test-specific files
+test-*.cjs
+test-*.js
+test-*.ts
+test_grouping_deduplication.ts
+test-storage/
+
+# Temporary directories for testing
+mock-destination/
+
+# IDE and editor files
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+Icon?
+Network Trash Folder
+Temporary Items
+Trashes
+
+# Development files
+.nyc_output/
+istanbul-reports/
+
+# Editor backup files
+*~
+*.bak
+*.orig
+*.tmp
+*.temp
+
+# Browser-sync
+.browser-sync*
+
+# Documentation
+implementation_summary.md
+*.log
+
+# Claude Flow generated files (keep these)
 .claude/settings.local.json
 .mcp.json
 claude-flow.config.json
@@ -23,13 +195,6 @@ coordination/orchestration/*
 *.sqlite-journal
 *.sqlite-wal
 claude-flow
-# Removed Windows wrapper files per user request
 hive-mind-prompt-*.txt
-
-# Environment files
-.env
-
-# Build outputs
-dist-extension/
-node_modules
-.env
+.agentic-qe
+.claude
